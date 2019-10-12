@@ -27,50 +27,15 @@ import java.util.Map;
  * @Date: 2019/9/29 19:45
  */
 @WebServlet(urlPatterns = "/main")
-public class MainServlet extends HttpServlet {
+public class MainServlet extends BaseServlet {
     EmpService empService = new EmpServiceImpl();
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("utf-8");
-        response.setContentType("text/html;charset=utf-8");
-
-        String target = request.getParameter("target");
-        switch(target){
-            case "list":
-                list(request,response);
-                break;
-            case "addEmp":
-                addEmp(request,response);
-                break;
-            case "queryOneLine":
-                queryOneLine(request,response);
-                break;
-            case "update":
-                update(request,response);
-                break;
-            case "delete":
-                delete(request,response);
-                break;
-            case "batchDel":
-                batchDel(request,response);
-                break;
-            default:
-                System.out.println("nothing");
-        }
-    }
 
     /**
      * 将所有用户的信息查询出来 ,并显示到用户信息界面上
      * @param request
      * @param response
      */
-    private void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //需要注意的是条件查询表单里面的标签的name不要和实体类的同名，因为如果同名 后续别的功能在转发过来request的时候是后出现功能不符合预期的情况的，
         // 比如更新后想显示全部 但是同名因为update的request里面有ename所以会造成只显示对修改的这一行的姓名模糊查询的现象
         String name = request.getParameter("name");
@@ -104,7 +69,7 @@ public class MainServlet extends HttpServlet {
         request.getRequestDispatcher("/emp/main.jsp").forward(request,response);
     }
 
-    private void addEmp(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void addEmp(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, String[]> map = request.getParameterMap();
         Emp emp = new Emp();
         try {
@@ -143,7 +108,7 @@ public class MainServlet extends HttpServlet {
     /**
      * 修改前先根据eid查询出要修改的行的信息显示到修改页面
      */
-    private void queryOneLine(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void queryOneLine(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String eid = request.getParameter("eid");
         Emp emp = empService.queryOneLine(eid);
         //将得到的那行数据传到修改界面
@@ -159,7 +124,7 @@ public class MainServlet extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      */
-    private void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, String[]> map = request.getParameterMap();
         Emp emp = new Emp();
         try {
@@ -193,7 +158,7 @@ public class MainServlet extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      */
-    private void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void delete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String eid = request.getParameter("eid");
         int i = empService.deleteEmp(eid);
         if (i > 0){
@@ -203,7 +168,8 @@ public class MainServlet extends HttpServlet {
         }
         list(request,response);
     }
-    private void batchDel(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    protected void batchDel(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] eids = request.getParameterValues("checkId");
         int num = empService.batchDelEmp(eids);
         if (num > 0){

@@ -69,6 +69,7 @@
     </table>
     </form>
     <p>
+        本页共${pb["data"].size()}行数据
         第${pb.pageNow}页/共${pb.pageTotal}页
         <a href="javascript:toPage(1)" >首页</a>&nbsp;
         <a href="javascript:toPage(${pb.pageNow - 1})" >上一页</a>&nbsp;
